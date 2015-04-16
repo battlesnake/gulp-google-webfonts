@@ -46,7 +46,7 @@ function getter() {
 		}
 
 		function parseCss(css, next) {
-			css = css.replace(/\s*([{}:;\(\)])\s*/g, '$1')
+			css = css.replace(/\s*([{}:;\(\)])\s*/g, '$1');
 			var rx = /@font-face{font-family:'([^']+)';font-style:(\w+);font-weight:(\w+);src:[^;]*url\(([^)]+\.woff)\)[^;]*;}/g;
 			var requests = [];
 			css.replace(rx, function (block, family, style, weight, url) {
