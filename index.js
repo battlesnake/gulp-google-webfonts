@@ -29,7 +29,7 @@ function getter() {
 		function requestCss(param, next) {
 			var req = {
 				host: 'fonts.googleapis.com',
-				path: '/css?family=' + param,
+				path: '/css?family=' + encodeURIComponent(param),
 				headers: {
 					'User-Agent': 'Mozilla/4.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1667.0 Safari/537.36'
 				}
