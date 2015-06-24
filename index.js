@@ -10,7 +10,7 @@ module.exports = getter;
 
 function getter() {
 	return through.obj(processor);
-	
+
 	function processor(file, enc, next) {
 		var self = this;
 		if (file.isNull()) {
@@ -51,7 +51,7 @@ function getter() {
 			var requests = [];
 			css.replace(rx, function (block, family, style, weight, url) {
 				var name = [family, style, weight].join('-') + '.woff';
-				requests.push({ family: family, style: style, weight: weight, name: name.replace(' ', '_'), url: url });
+				requests.push({ family: family, style: style, weight: weight, name: name.replace(/\s/g, '_'), url: url });
 			});
 			generateFontCss(requests);
 			next(null, requests);
