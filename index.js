@@ -9,16 +9,21 @@ var async = require('async');
 module.exports = getter;
 
 function getter(options) {
-	if (!options)
-			options = {}
-	if (!options.fontsDir)
-			options.fontsDir = './'
-	if (!options.cssDir)
-			options.cssDir = './'
-	if (options.fontsDir.substr(options.fontsDir.length - 1) !== '/')
-			options.fontsDir += '/'
-	if (options.cssDir.substr(options.cssDir.length - 1) !== '/')
-			options.cssDir += '/'
+	if (!options) {
+		options = {};
+	}
+	if (!options.fontsDir) {
+		options.fontsDir = './';
+	}
+	if (!options.cssDir) {
+		options.cssDir = './';
+	}
+	if (options.fontsDir.substr(options.fontsDir.length - 1) !== '/') {
+		options.fontsDir += '/';
+	}
+	if (options.cssDir.substr(options.cssDir.length - 1) !== '/') {
+		options.cssDir += '/';
+	}
 	return through.obj(processor);
 
 	function processor(file, enc, next) {
