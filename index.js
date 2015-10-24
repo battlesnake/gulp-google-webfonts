@@ -8,7 +8,17 @@ var async = require('async');
 
 module.exports = getter;
 
-function getter() {
+function getter(options) {
+	if (!options)
+			options = {}
+	if (!options.fontsDir)
+			options.fontsDir = './'
+	if (!options.cssDir)
+			options.cssDir = './'
+	if (options.fontsDir.substr(options.fontsDir.length - 1) !== '/')
+			options.fontsDir += '/'
+	if (options.cssDir.substr(options.cssDir.length - 1) !== '/')
+			options.cssDir += '/'
 	return through.obj(processor);
 
 	function processor(file, enc, next) {
@@ -63,14 +73,14 @@ function getter() {
 				'	font-family: \'$family\';',
 				'	font-style: $style;',
 				'	font-weight: $weight;',
-				'	src: url($name) format(\'woff\');',
+				'	src: url(' + options.fontsDir + '$name) format(\'woff\');',
 				'}'
 			].join('\n');
 			var css = requests
 				.map(makeFontFace)
 				.join('\n\n');
 			self.push(new File({
-				path: 'fonts.css',
+				path: options.cssDir +'fonts.css',
 				contents: new Buffer(css, 'utf8')
 			}));
 
@@ -94,7 +104,7 @@ function getter() {
 
 				function emitFont(name, stream, next) {
 					self.push(new File({
-						path: name,
+						path: options.fontsDir + name,
 						contents: stream
 					}));
 					next();
