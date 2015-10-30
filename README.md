@@ -94,3 +94,32 @@ A gulp plugin to download Google webfonts and generate a stylesheet for them.
     	font-weight: 700;
     	src: url(Roboto-italic-700.woff) format('woff');
     }
+
+## Options
+
+The googleWebFonts object can take the following options:
+
+* fontsDir - The path the output fonts should be under. (Note: the path is relative to `gulp.dest`)
+* cssDir - The path the output css should be under. (Note: the path is relative to `gulp.dest`)
+* cssFilename - The filename of the output css file.
+
+### Example:
+
+````javascript
+gulp.task('googlefonts', function () {
+    return gulp.src(paths.src +'/assets/fonts.list')
+        .pipe(googleWebFonts({fontsDir: 'googlefonts', cssDir: 'googlecss', cssFilename: 'myGoogleFonts.css'}))
+        .pipe(gulp.dest(paths.src +'/assets/'));
+});
+````
+
+Will create the following directory structure:
+```
+assets
+│
+└───googlefonts
+    │   *.woff font files
+    |
+    └───googlecss
+    │   myGoogleFonts.css
+```
