@@ -1,6 +1,6 @@
 {
   "name": "gulp-google-webfonts",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A gulp plugin to download Google webfonts and generate a stylesheet for them.",
   "main": "index.js",
   "scripts": {
