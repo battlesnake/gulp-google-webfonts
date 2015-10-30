@@ -12,6 +12,9 @@ function getter(options) {
 	if (!options) {
 		options = {};
 	}
+	if (!options.cssFilename) {
+		options.cssFilename = 'fonts.css';
+	}
 	if (!options.fontsDir) {
 		options.fontsDir = './';
 	}
@@ -85,7 +88,7 @@ function getter(options) {
 				.map(makeFontFace)
 				.join('\n\n');
 			self.push(new File({
-				path: options.cssDir +'fonts.css',
+				path: options.cssDir + options.cssFilename,
 				contents: new Buffer(css, 'utf8')
 			}));
 
