@@ -1,0 +1,14 @@
+{
+  "name": "example1",
+  "version": "0.0.1",
+  "description": "",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "gulp"
+  },
+  "author": "Mark K Cowan",
+  "license": "ISC",
+  "dependencies": {
+    "gulp-google-webfonts": "*"
+  }
+}

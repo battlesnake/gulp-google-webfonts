@@ -1,11 +1,7 @@
 var gulp = require('gulp');
-var googleWebFonts = require('../'); //require('gulp-google-webfonts');
+var googleWebFonts = require('gulp-google-webfonts');
 
-var options = {
-// fontsDir: 'googlefonts/',
-// cssDir: 'googlecss/',
-// cssFilename: 'myGoogleFonts.css'
-};
+var options = { };
 
 gulp.task('fonts', function () {
 	return gulp.src('./fonts.list')
