@@ -54,7 +54,7 @@ function getter(options) {
 
 		function parseTabDelimetedLine(line) {
 			var fields = line.split('\t');
-			var face = fields[0];
+			var face = fields[0].replace(/ /g, '+');
 			var style = fields[1] || '400';
 			var subset = fields[2];
 			if (subset) {
