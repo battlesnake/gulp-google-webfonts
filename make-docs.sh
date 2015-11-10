@@ -27,7 +27,7 @@ cd "${root}"
 
 function indent {
 	local line
-	while read line; do
+	while IFS='' read line; do
 		printf -- "\t%s\n" "${line}"
 	done
 }

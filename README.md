@@ -22,11 +22,11 @@ A gulp plugin to download Google webfonts and generate a stylesheet for them.
 	var options = { };
 	
 	gulp.task('fonts', function () {
-	return gulp.src('./fonts.list')
-	.pipe(googleWebFonts(options))
-	.pipe(gulp.dest('out/fonts'))
-	;
-	});
+		return gulp.src('./fonts.list')
+			.pipe(googleWebFonts(options))
+			.pipe(gulp.dest('out/fonts'))
+			;
+		});
 	
 	gulp.task('default', ['fonts']);
 
@@ -45,31 +45,31 @@ A gulp plugin to download Google webfonts and generate a stylesheet for them.
 ### out/fonts/fonts.css
 
 	@font-face {
-	font-family: 'Oswald';
-	font-style: normal;
-	font-weight: 400;
-	src: url(Oswald-normal-400.woff) format('woff');
+		font-family: 'Oswald';
+		font-style: normal;
+		font-weight: 400;
+		src: url(Oswald-normal-400.woff) format('woff');
 	}
 	
 	@font-face {
-	font-family: 'Oswald';
-	font-style: normal;
-	font-weight: 700;
-	src: url(Oswald-normal-700.woff) format('woff');
+		font-family: 'Oswald';
+		font-style: normal;
+		font-weight: 700;
+		src: url(Oswald-normal-700.woff) format('woff');
 	}
 	
 	@font-face {
-	font-family: 'Roboto';
-	font-style: normal;
-	font-weight: 500;
-	src: url(Roboto-normal-500.woff) format('woff');
+		font-family: 'Roboto';
+		font-style: normal;
+		font-weight: 500;
+		src: url(Roboto-normal-500.woff) format('woff');
 	}
 	
 	@font-face {
-	font-family: 'Roboto';
-	font-style: italic;
-	font-weight: 500;
-	src: url(Roboto-italic-500.woff) format('woff');
+		font-family: 'Roboto';
+		font-style: italic;
+		font-weight: 500;
+		src: url(Roboto-italic-500.woff) format('woff');
 
 # Options
 
@@ -89,17 +89,17 @@ The googleWebFonts object can take the following options:
 	var googleWebFonts = require('gulp-google-webfonts');
 	
 	var options = {
-	fontsDir: 'googlefonts/',
-	cssDir: 'googlecss/',
-	cssFilename: 'myGoogleFonts.css'
+		fontsDir: 'googlefonts/',
+		cssDir: 'googlecss/',
+		cssFilename: 'myGoogleFonts.css'
 	};
 	
 	gulp.task('fonts', function () {
-	return gulp.src('./fonts.list')
-	.pipe(googleWebFonts(options))
-	.pipe(gulp.dest('out/fonts'))
-	;
-	});
+		return gulp.src('./fonts.list')
+			.pipe(googleWebFonts(options))
+			.pipe(gulp.dest('out/fonts'))
+			;
+		});
 	
 	gulp.task('default', ['fonts']);
 
