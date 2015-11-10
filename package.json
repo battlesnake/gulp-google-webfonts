@@ -1,6 +1,6 @@
 {
   "name": "gulp-google-webfonts",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "A gulp plugin to download Google webfonts and generate a stylesheet for them.",
   "main": "index.js",
   "scripts": {
@@ -11,13 +11,14 @@
     "url": "https://github.com/battlesnake/gulp-google-webfonts.git"
   },
   "author": "Mark K Cowan",
-  "license": "GPL",
+  "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/battlesnake/gulp-google-webfonts/issues"
   },
   "homepage": "https://github.com/battlesnake/gulp-google-webfonts",
   "dependencies": {
     "async": "^0.9.0",
+    "lodash.defaults": "^3.1.2",
     "through2": "^0.6.5",
     "vinyl": "^0.4.6"
   }
