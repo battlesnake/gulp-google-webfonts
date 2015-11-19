@@ -4,6 +4,7 @@ A gulp plugin to download Google webfonts and generate a stylesheet for them.
 
 # Example #1
 : example1/
+$ rm -rf out/
 
 ## Input
 
@@ -52,6 +53,7 @@ $ gulp fonts
 
 ### out/
 : example2/out/
+$ rm -rf out/
 
 | find fonts/
 

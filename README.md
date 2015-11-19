@@ -113,13 +113,8 @@ The googleWebFonts object can take the following options:
 	fonts/googlecss
 	fonts/googlecss/myGoogleFonts.css
 	fonts/googlefonts
-	fonts/googlefonts/googlefonts
-	fonts/googlefonts/googlefonts/Oswald-normal-700.woff
-	fonts/googlefonts/googlefonts/Roboto-italic-500.woff
-	fonts/googlefonts/googlefonts/Oswald-normal-400.woff
-	fonts/googlefonts/googlefonts/Roboto-normal-500.woff
 	fonts/googlefonts/Oswald-normal-400.woff
-	fonts/googlefonts/Roboto-normal-500.woff
 	fonts/googlefonts/Oswald-normal-700.woff
+	fonts/googlefonts/Roboto-normal-500.woff
 	fonts/googlefonts/Roboto-italic-500.woff
 
