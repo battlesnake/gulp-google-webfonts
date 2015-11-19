@@ -154,7 +154,7 @@ function getter(options) {
 
 				function emitFont(name, stream, next) {
 					self.push(new File({
-						path: path.join(options.fontsDir, name),
+						path: name,
 						contents: stream
 					}));
 					next();
