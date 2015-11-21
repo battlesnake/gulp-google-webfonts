@@ -1,35 +1,109 @@
-'use strict';
+#!/usr/bin/node --use_strict
 
-var through = require('through2');
 var http = require('http');
-var File = require('vinyl');
 var path = require('path');
 var async = require('async');
 var _ = { defaults: require('lodash.defaults') };
 
-module.exports = getter;
+var isGulp = !!module.parent;
+
+if (isGulp) {
+	var through = require('through2');
+	var File = require('vinyl');
+
+	module.exports = getter;
+} else {
+	var fs = require('fs');
+	var mkdirp = require('mkdirp');
+}
 
 var defaultOptions = {
 	cssFilename: 'fonts.css',
 	fontsDir: './',
-	cssDir: './'
+	cssDir: './',
+	outBaseDir: ''
 };
+
+var debug = process.env.debug || process.env.DEBUG;
+
+function verbose(msg) {
+	if (debug) {
+		process.stderr.write(msg + '\n');
+	}
+}
+
+if (!isGulp) {
+	var cmd = require('commander')
+		.version(require('./package.json').version)
+		.option('--css-filename [filename]', 'Name for output CSS file', defaultOptions.cssFilename)
+		.option('--css-dir [path]', 'CSS output directory', defaultOptions.fontsDir)
+		.option('--fonts-dir [path]', 'Fonts output directory', defaultOptions.cssDir)
+		.option('--out-base-dir [path]', 'Base path to output directory, prepended to cssDir/fontsDir', defaultOptions.outBaseDir)
+		.option('-v, --verbose', 'Verbose output', false)
+		.parse(process.argv)
+		;
+	debug = cmd.debug;
+	var src = '';
+	process.stdin
+		.on('data', function (buf) { src += buf.toString(); })
+		.on('end', function () {
+			getter(cmd)
+				(src, null, function (err) { if (err) { throw err; } else { process.exit(0); } });
+		});
+}
 
 function getter(options) {
 	options = _.defaults({}, options, defaultOptions);
-	return through.obj(processor);
+	if (isGulp) {
+		if (options.outBaseDir) {
+			throw new Error('outBaseDir only valid when run from command line, use gulp.dest instead');
+		}
+	}
+	return isGulp ? through.obj(processor) : processor;
 
 	function processor(file, enc, next) {
 		var self = this;
-		if (file.isNull()) {
-			return self.emit('data', file);
+		function writeFile(filename, contents, next) {
+			if (options.outBaseDir) {
+				filename = path.join(options.outBaseDir, filename);
+			}
+			verbose('Writing ' + contents.length + ' bytes to "' + filename + '"');
+			if (isGulp) {
+				writeFileToGulpStream(filename, contents, next);
+			} else {
+				writeFileToDisk(filename, contents, next);
+			}
+			return;
+
+			function writeFileToGulpStream(filename, contents, next) {
+				self.push(new File({
+					path: filename,
+					contents: contents
+				}));
+				next(null, null);
+			}
+
+			function writeFileToDisk(filename, contents, next) {
+				async.series([
+					async.apply(mkdirp, path.dirname(filename)),
+					async.apply(fs.writeFile, filename, contents, null)
+				], next);
+			}
 		}
-		if (file.isStream()) {
-			return self.emit('error', new Error('webfont-getter: Streaming not supported'));
+		var data;
+		if (isGulp) {
+			if (file.isNull()) {
+				return self.emit('data', file);
+			}
+			if (file.isStream()) {
+				return self.emit('error', new Error('webfont-getter: Streaming not supported'));
+			}
+			data = file.contents.toString(enc);
+		} else {
+			data = file;
 		}
 		var subsets = [];
-		var param = file.contents
-			.toString(enc)
+		var param = data
 			.split('\n')
 			.map(function (s) { return s.trim(); })
 			.filter(function (s) { return s.length > 0 && s.charAt(0) !== '#'; })
@@ -89,6 +163,7 @@ function getter(options) {
 					'User-Agent': 'Mozilla/4.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1667.0 Safari/537.36'
 				}
 			};
+			verbose('GET ' + req.host + req.path);
 			http
 				.get(req, async.apply(next, null))
 				.on('error', next);
@@ -96,6 +171,7 @@ function getter(options) {
 
 		function receiveCss(res, next) {
 			var css = [];
+			verbose('HTTP ' + res.statusCode);
 			res.on('data', function (data) { css.push(data.toString()); });
 			res.on('error', next);
 			res.on('end', function () { next(null, css.join('')); });
@@ -112,11 +188,10 @@ function getter(options) {
 				var name = [family, style, weight].join('-') + '.woff';
 				requests.push({ family: family, style: style, weight: weight, name: name.replace(/\s/g, '_'), url: url });
 			});
-			generateFontCss(requests);
-			next(null, requests);
+			generateFontCss(requests, next);
 		}
 
-		function generateFontCss(requests) {
+		function generateFontCss(requests, next) {
 			var template = [
 				'@font-face {',
 				'	font-family: \'$family\';',
@@ -128,10 +203,7 @@ function getter(options) {
 			var css = requests
 				.map(makeFontFace)
 				.join('\n\n');
-			self.push(new File({
-				path: path.join(options.cssDir, options.cssFilename),
-				contents: new Buffer(css, 'utf8')
-			}));
+			writeFile(path.join(options.cssDir, options.cssFilename), new Buffer(css), function (err) { next(err, requests); });
 
 			function makeFontFace(request) {
 				request.name = path.join(options.fontsDir, request.name);
@@ -152,12 +224,14 @@ function getter(options) {
 						.on('error', next);
 				}
 
-				function emitFont(name, stream, next) {
-					self.push(new File({
-						path: name,
-						contents: stream
-					}));
-					next();
+				function emitFont(name, res, next) {
+					if (res.statusCode !== 200) {
+						next(new Error('HTTP GET returned code ' + res.statusCode + ' for ' + name));
+						return;
+					}
+					var data = [];
+					res.on('data', function (chunk) { data.push(chunk); });
+					res.on('end', function () { writeFile(name, Buffer.concat(data), next); });
 				}
 			}
 		}

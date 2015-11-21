@@ -38,7 +38,7 @@ The googleWebFonts object can take the following options:
  * cssFilename - The filename of the output css file.
 
 # Example #2
-$ cd $root/example2/
+: example2/
 
 ## Input (other inputs same as example #1)
 
@@ -53,7 +53,34 @@ $ gulp fonts
 
 ### out/
 : example2/out/
-$ rm -rf out/
 
-| find fonts/
+| find -type f
 
+# Example #3
+: example3/
+
+Command-line usage
+
+## Input
+
+### Makefile
+
+< makefile
+
+### fonts.list
+
+< fonts.list
+
+## Output
+
+$ make clean && make
+	make
+
+### out/
+: example3/out/
+
+| find -type f
+
+### out/css/fonts.css
+
+< css/fonts.css

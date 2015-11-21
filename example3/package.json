@@ -1,0 +1,14 @@
+{
+  "name": "example3",
+  "version": "0.0.1",
+  "description": "",
+  "main": "makefile",
+  "scripts": {
+    "test": "make"
+  },
+  "author": "Mark K Cowan",
+  "license": "ISC",
+  "dependencies": {
+    "gulp-google-webfonts": "*"
+  }
+}

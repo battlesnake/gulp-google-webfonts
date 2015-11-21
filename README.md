@@ -109,12 +109,81 @@ The googleWebFonts object can take the following options:
 
 ### out/
 
-	fonts/
-	fonts/googlecss
-	fonts/googlecss/myGoogleFonts.css
-	fonts/googlefonts
-	fonts/googlefonts/Oswald-normal-400.woff
-	fonts/googlefonts/Oswald-normal-700.woff
-	fonts/googlefonts/Roboto-normal-500.woff
-	fonts/googlefonts/Roboto-italic-500.woff
+	./fonts/googlecss/myGoogleFonts.css
+	./fonts/googlefonts/Oswald-normal-400.woff
+	./fonts/googlefonts/Oswald-normal-700.woff
+	./fonts/googlefonts/Roboto-normal-500.woff
+	./fonts/googlefonts/Roboto-italic-500.woff
 
+# Example #3
+
+Command-line usage
+
+## Input
+
+### Makefile
+
+	PATH := ./node_modules/.bin:$(PATH)
+	
+	out := out
+	
+	fonts_list := fonts.list
+	fonts_dir := fonts
+	css_dir := css
+	css_filename := fonts.css
+	
+	.PHONY: default fonts clean
+	
+	default: fonts
+	
+	clean:
+		rm -rf -- $(out)
+	
+	fonts:
+		google-webfonts < $(fonts_list) --out-base-dir $(out) --fonts-dir $(fonts_dir) --css-dir $(css_dir) --css-filename $(css_filename)
+
+### fonts.list
+
+	Lato	300,400,400italic	latin,greek
+	Roboto	400					latin,latin-ext
+
+## Output
+
+	make
+
+### out/
+
+	./css/fonts.css
+	./fonts/Roboto-normal-400.woff
+	./fonts/Lato-italic-400.woff
+	./fonts/Lato-normal-400.woff
+	./fonts/Lato-normal-300.woff
+
+### out/css/fonts.css
+
+	@font-face {
+		font-family: 'Lato';
+		font-style: normal;
+		font-weight: 300;
+		src: url(fonts/Lato-normal-300.woff) format('woff');
+	}
+	
+	@font-face {
+		font-family: 'Lato';
+		font-style: normal;
+		font-weight: 400;
+		src: url(fonts/Lato-normal-400.woff) format('woff');
+	}
+	
+	@font-face {
+		font-family: 'Lato';
+		font-style: italic;
+		font-weight: 400;
+		src: url(fonts/Lato-italic-400.woff) format('woff');
+	}
+	
+	@font-face {
+		font-family: 'Roboto';
+		font-style: normal;
+		font-weight: 400;
+		src: url(fonts/Roboto-normal-400.woff) format('woff');
