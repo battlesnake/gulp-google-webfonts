@@ -23,6 +23,11 @@ declare -r root="$(realpath "$(dirname "$1")")"
 declare -r in="$(basename "$1")"
 declare -r out="${in%.lmd}.md"
 
+rm -f -- node_modules/bin/google-webfonts node_modules/gulp-google-webfonts
+ln -srf index.js node_modules/.bin/google-webfonts
+ln -srf . node_modules/gulp-google-webfonts
+export PATH="$PATH:$PWD/node_modules/.bin"
+
 cd "${root}"
 
 function indent {

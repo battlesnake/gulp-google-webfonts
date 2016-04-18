@@ -112,8 +112,8 @@ The googleWebFonts object can take the following options:
 	./fonts/googlecss/myGoogleFonts.css
 	./fonts/googlefonts/Oswald-normal-400.woff
 	./fonts/googlefonts/Oswald-normal-700.woff
-	./fonts/googlefonts/Roboto-normal-500.woff
 	./fonts/googlefonts/Roboto-italic-500.woff
+	./fonts/googlefonts/Roboto-normal-500.woff
 
 # Example #3
 
@@ -154,10 +154,10 @@ Command-line usage
 ### out/
 
 	./css/fonts.css
-	./fonts/Roboto-normal-400.woff
-	./fonts/Lato-italic-400.woff
 	./fonts/Lato-normal-400.woff
 	./fonts/Lato-normal-300.woff
+	./fonts/Lato-italic-400.woff
+	./fonts/Roboto-normal-400.woff
 
 ### out/css/fonts.css
 
