@@ -154,10 +154,10 @@ Command-line usage
 ### out/
 
 	./css/fonts.css
-	./fonts/Lato-normal-400.woff
+	./fonts/Roboto-normal-400.woff
 	./fonts/Lato-normal-300.woff
 	./fonts/Lato-italic-400.woff
-	./fonts/Roboto-normal-400.woff
+	./fonts/Lato-normal-400.woff
 
 ### out/css/fonts.css
 
