@@ -21,7 +21,26 @@ var defaultOptions = {
 	cssFilename: 'fonts.css',
 	fontsDir: './',
 	cssDir: './',
-	outBaseDir: ''
+	outBaseDir: '',
+	format: 'woff'
+};
+
+var formatData = {
+	'woff': {
+		'extension': 'woff',
+		'agent': 'Mozilla/4.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1667.0 Safari/537.36',
+		'format': 'woff'
+	},
+	'woff2': {
+		'extension': 'woff2',
+		'agent': 'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36',
+		'format': 'woff2'
+	},
+	'ttf': {
+		'extension': 'ttf',
+		'agent': 'Unknown',
+		'format': 'truetype'
+	}
 };
 
 var debug = process.env.debug || process.env.DEBUG;
@@ -39,6 +58,7 @@ if (!isGulp) {
 		.option('--css-dir [path]', 'CSS output directory', defaultOptions.fontsDir)
 		.option('--fonts-dir [path]', 'Fonts output directory', defaultOptions.cssDir)
 		.option('--out-base-dir [path]', 'Base path to output directory, prepended to cssDir/fontsDir', defaultOptions.outBaseDir)
+		.option('--format [format]', 'Format to retrieve [woff|woff2|ttf]', defaultOptions.format)
 		.option('-v, --verbose', 'Verbose output', false)
 		.parse(process.argv)
 		;
@@ -160,7 +180,7 @@ function getter(options) {
 				host: 'fonts.googleapis.com',
 				path: '/css?family=' + param,
 				headers: {
-					'User-Agent': 'Mozilla/4.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1667.0 Safari/537.36'
+					'User-Agent': formatData[options.format].agent
 				}
 			};
 			verbose('GET ' + req.host + req.path);
@@ -178,26 +198,30 @@ function getter(options) {
 		}
 
 		function parseCss(css, next) {
+			var ext = formatData[options.format].extension;
 			css = css.replace(/\s*([{}:;\(\)])\s*/g, '$1');
 			if (css.substr(0, 2) === '<!') {
 				return next(new Error('Failed to retrieve webfont CSS'));
 			}
-			var rx = /@font-face{font-family:'([^']+)';font-style:(\w+);font-weight:(\w+);src:[^;]*url\(([^)]+\.woff)\)[^;]*;}/g;
+			var rxStr = "@font-face{font-family:'([^']+)';font-style:(\\w+);font-weight:(\\w+);src:[^;]*url\\(([^)]+\\." + ext + ")\\)[^;]*;(?:unicode-range:([^;]+);)?}";
+			var rx = new RegExp(rxStr, 'g');
 			var requests = [];
-			css.replace(rx, function (block, family, style, weight, url) {
-				var name = [family, style, weight].join('-') + '.woff';
-				requests.push({ family: family, style: style, weight: weight, name: name.replace(/\s/g, '_'), url: url });
+			css.replace(rx, function (block, family, style, weight, url, range) {
+				var name = [family, style, weight].join('-') + '.' + ext;
+				requests.push({ family: family, style: style, weight: weight, name: name.replace(/\s/g, '_'), url: url, range: range || 'U+0-10FFFF' });
 			});
 			generateFontCss(requests, next);
 		}
 
 		function generateFontCss(requests, next) {
+			var ext = formatData[options.format].format;
 			var template = [
 				'@font-face {',
 				'	font-family: \'$family\';',
 				'	font-style: $style;',
 				'	font-weight: $weight;',
-				'	src: url($name) format(\'woff\');',
+				'	src: url($name) format(\'' + ext + '\');',
+				'	unicode-range: $range;',
 				'}'
 			].join('\n');
 			var css = requests
