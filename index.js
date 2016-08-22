@@ -22,6 +22,8 @@ var defaultOptions = {
 	fontsDir: './',
 	cssDir: './',
 	outBaseDir: '',
+	host: 'fonts.googleapis.com',
+	hostPath: 'css',
 	format: 'woff'
 };
 
@@ -58,6 +60,8 @@ if (!isGulp) {
 		.option('--css-dir [path]', 'CSS output directory', defaultOptions.fontsDir)
 		.option('--fonts-dir [path]', 'Fonts output directory', defaultOptions.cssDir)
 		.option('--out-base-dir [path]', 'Base path to output directory, prepended to cssDir/fontsDir', defaultOptions.outBaseDir)
+		.option('--host [domain]', 'Host to query ("fonts.googleapis.com")', defaultOptions.host)
+		.option('--host-path [path]', 'Host path for query ("css")', defaultOptions.hostPath)
 		.option('--format [format]', 'Format to retrieve [woff|woff2|ttf]', defaultOptions.format)
 		.option('-v, --verbose', 'Verbose output', false)
 		.parse(process.argv)
@@ -177,8 +181,8 @@ function getter(options) {
 				param = param + '&subset=' + subsets.join(',');
 			}
 			var req = {
-				host: 'fonts.googleapis.com',
-				path: '/css?family=' + param,
+				host: options.host,
+				path: '/' + options.hostPath + '?family=' + param,
 				headers: {
 					'User-Agent': formatData[options.format].agent
 				}
@@ -199,21 +203,54 @@ function getter(options) {
 
 		function parseCss(css, next) {
 			var ext = formatData[options.format].extension;
-			css = css.replace(/\s*([{}:;\(\)])\s*/g, '$1');
 			if (css.substr(0, 2) === '<!') {
 				return next(new Error('Failed to retrieve webfont CSS'));
 			}
-			var rxStr = "@font-face{font-family:'([^']+)';font-style:(\\w+);font-weight:(\\w+);src:[^;]*url\\(([^)]+\\." + ext + ")\\)[^;]*;(?:unicode-range:([^;]+);)?}";
-			var rx = new RegExp(rxStr, 'g');
+			var fontFaces = extractFontFaceBlocks(css);
+			var classes = extractClasses(css);
 			var requests = [];
-			css.replace(rx, function (block, family, style, weight, url, range) {
-				var name = [family, style, weight].join('-') + '.' + ext;
-				requests.push({ family: family, style: style, weight: weight, name: name.replace(/\s/g, '_'), url: url, range: range || 'U+0-10FFFF' });
-			});
-			generateFontCss(requests, next);
+			for (var i=0; i<fontFaces.length; i++) {
+				requests.push(extractData(fontFaces[i], ext));
+			}
+
+			generateFontCss(requests, classes, next);
+
+
+			function extractData(block, ext) {
+				var re = new RegExp([
+					"\\s*font-family:\\s*'([^']+)';",
+					"\\s*font-style:\\s*(\\w+);",
+					"\\s*font-weight:\\s*(\\w+);",
+					"\\s*src:[^;]*url\\(([^)]+\\." + ext + ")\\)[^;]*;",
+					".*(?:unicode-range:([^;]+);)?",
+				].join(''), 'm');
+
+				return formatData.apply(null, block.match(re, 'm'));
+
+
+				function formatData(block, family, style, weight, url, range) {
+					var name = [family, style, weight].join('-') + '.' + ext;
+					return {
+						family: family,
+						style: style,
+						weight: weight,
+						name: name.replace(/\s/g, '_'),
+						url: url,
+						range: range || 'U+0-10FFFF'
+					};
+				}
+			}
+
+			function extractFontFaceBlocks(css) {
+				return css.match(/@font-face\s*{[^}]+}/g);
+			}
+
+			function extractClasses(css) {
+				return css.match(/\.-?[_a-zA-Z]+[_a-zA-Z0-9-]*\s*{[^}]+}/g);
+			}
 		}
 
-		function generateFontCss(requests, next) {
+		function generateFontCss(requests, classes, next) {
 			var ext = formatData[options.format].format;
 			var template = [
 				'@font-face {',
@@ -226,13 +263,20 @@ function getter(options) {
 			].join('\n');
 			var css = requests
 				.map(makeFontFace)
+				.concat(classes)
 				.join('\n\n');
-			writeFile(path.join(options.cssDir, options.cssFilename), new Buffer(css), function (err) { next(err, requests); });
+			writeFile(
+				path.join(options.cssDir, options.cssFilename),
+				new Buffer(css),
+				function (err) { next(err, requests); }
+			);
 
 			function makeFontFace(request) {
 				request.name = path.posix.join(options.fontsDir, request.name);
 				return template
-					.replace(/\$(\w+)/g, function (m, name) { return request[name]; });
+					.replace(/\$(\w+)/g, function (m, name) {
+						return request[name];
+					});
 			}
 		}
 
