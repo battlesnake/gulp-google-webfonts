@@ -38,6 +38,16 @@ var formatData = {
 		'agent': 'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36',
 		'format': 'woff2'
 	},
+	'svg': {
+		'extension': 'svg',
+		'agent': 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 3_0 like Mac OS X; en-us) AppleWebKit/528.18 (KHTML, like Gecko) Version/4.0 Mobile/7A341 Safari/528.16',
+		'format': 'svg'
+	},
+	'eot': {
+		'extension': 'eot',
+		'agent': 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1)',
+		'format': undefined, // Meaning no format clause is generated.
+	},
 	'ttf': {
 		'extension': 'ttf',
 		'agent': 'Unknown',
@@ -62,7 +72,7 @@ if (!isGulp) {
 		.option('--out-base-dir [path]', 'Base path to output directory, prepended to cssDir/fontsDir', defaultOptions.outBaseDir)
 		.option('--host [domain]', 'Host to query ("fonts.googleapis.com")', defaultOptions.host)
 		.option('--host-path [path]', 'Host path for query ("css")', defaultOptions.hostPath)
-		.option('--format [format]', 'Format to retrieve [woff|woff2|ttf]', defaultOptions.format)
+		.option('--format [format]', 'Format to retrieve [woff|woff2|svg|eot|ttf]', defaultOptions.format)
 		.option('-v, --verbose', 'Verbose output', false)
 		.parse(process.argv)
 		;
@@ -217,11 +227,14 @@ function getter(options) {
 
 
 			function extractData(block, ext) {
+				// We cannot additionally require 'ext' to be part of URL pattern
+				// since Google doesn't put there '.svg' suffix for some reason
+				// (but does that for other extensions).
 				var re = new RegExp([
 					"\\s*font-family:\\s*'([^']+)';",
 					"\\s*font-style:\\s*(\\w+);",
 					"\\s*font-weight:\\s*(\\w+);",
-					"\\s*src:[^;]*url\\(([^)]+\\." + ext + ")\\)[^;]*;",
+					"\\s*src:[^;]*url\\(([^)]+)\\)[^;]*;",
 					".*(?:unicode-range:([^;]+);)?",
 				].join(''), 'm');
 
@@ -252,12 +265,13 @@ function getter(options) {
 
 		function generateFontCss(requests, classes, next) {
 			var ext = formatData[options.format].format;
+			var format = ext ? ' format(\'' + ext + '\')' : '';
 			var template = [
 				'@font-face {',
 				'	font-family: \'$family\';',
 				'	font-style: $style;',
 				'	font-weight: $weight;',
-				'	src: url($name) format(\'' + ext + '\');',
+				'	src: url($name)' + format + ';',
 				'	unicode-range: $range;',
 				'}'
 			].join('\n');

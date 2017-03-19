@@ -75,4 +75,4 @@ while IFS='' read __line; do
 
 	map_line "${__line}"
 
-done < "${in}" > "${out}"
+done < "${in}" | sed -e 's/[[:space:]]\+$//g' > "${out}"
