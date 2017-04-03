@@ -286,7 +286,7 @@ function getter(options) {
 			);
 
 			function makeFontFace(request) {
-				request.name = path.posix.join(options.fontsDir, request.name);
+				request.name = path.join(options.fontsDir, request.name);
 				return template
 					.replace(/\$(\w+)/g, function (m, name) {
 						return request[name];
