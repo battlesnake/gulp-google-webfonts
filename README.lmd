@@ -2,6 +2,8 @@
 
 A gulp plugin to download Google webfonts and generate a stylesheet for them.
 
+Note: The examples seem to have issues with Gulp v4.
+
 # Example #1
 : example1/
 $ rm -rf out/

@@ -2,6 +2,8 @@
 
 A gulp plugin to download Google webfonts and generate a stylesheet for them.
 
+Note: The examples seem to have issues with Gulp v4.
+
 # Example #1
 
 ## Input
@@ -17,7 +19,7 @@ A gulp plugin to download Google webfonts and generate a stylesheet for them.
 ### gulpfile.js
 
 	var gulp = require('gulp');
-	var googleWebFonts = require('gulp-google-webfonts');
+	var googleWebFonts = require('../');
 
 	var options = { };
 
@@ -62,17 +64,17 @@ A gulp plugin to download Google webfonts and generate a stylesheet for them.
 
 	@font-face {
 		font-family: 'Roboto';
-		font-style: normal;
+		font-style: italic;
 		font-weight: 500;
-		src: url(Roboto-normal-500.woff) format('woff');
+		src: url(Roboto-italic-500.woff) format('woff');
 		unicode-range: U+0-10FFFF;
 	}
 
 	@font-face {
 		font-family: 'Roboto';
-		font-style: italic;
+		font-style: normal;
 		font-weight: 500;
-		src: url(Roboto-italic-500.woff) format('woff');
+		src: url(Roboto-normal-500.woff) format('woff');
 		unicode-range: U+0-10FFFF;
 	}
 
@@ -84,7 +86,6 @@ The googleWebFonts object can take the following options:
  * fontsDir - The path the output fonts should be under. (Note: the path is relative to `gulp.dest`)
  * cssDir - The path the output css should be under. (Note: the path is relative to `gulp.dest`)
  * cssFilename - The filename of the output css file.
- * relativePaths - Whether the fonts path should be relative to the css path.
 
 # Example #2
 
@@ -93,7 +94,7 @@ The googleWebFonts object can take the following options:
 ### gulpfile.js
 
 	var gulp = require('gulp');
-	var googleWebFonts = require('gulp-google-webfonts');
+	var googleWebFonts = require('../');
 
 	var options = {
 		fontsDir: 'googlefonts/',
@@ -116,34 +117,27 @@ The googleWebFonts object can take the following options:
 
 ### out/
 
-	./fonts/googlecss/myGoogleFonts.css
-	./fonts/googlefonts/Oswald-normal-700.woff
 	./fonts/googlefonts/Oswald-normal-400.woff
-	./fonts/googlefonts/Roboto-italic-500.woff
+	./fonts/googlefonts/Oswald-normal-700.woff
 	./fonts/googlefonts/Roboto-normal-500.woff
+	./fonts/googlefonts/Roboto-italic-500.woff
+	./fonts/googlecss/myGoogleFonts.css
+
 
 # Example #3
 
-## Input
-
-### fonts.list
-
-	# Tab-delimeted format
-	Oswald	400,700	latin,latin-ext
-
-	# Google format
-	Roboto:500,500italic&subset=greek
+## Input (other inputs same as example #1)
 
 ### gulpfile.js
 
 	var gulp = require('gulp');
-	var googleWebFonts = require('gulp-google-webfonts');
+	var googleWebFonts = require('../');
 
 	var options = {
 		fontsDir: 'googlefonts/',
 		cssDir: 'googlecss/',
 		cssFilename: 'myGoogleFonts.css',
-		relativePaths: true
+	  relativePaths: true
 	};
 
 	gulp.task('fonts', function () {
@@ -159,47 +153,18 @@ The googleWebFonts object can take the following options:
 
 	gulp fonts
 
-### out/fonts/
+### out/
 
-	fonts.css
-	Oswald-normal-400.woff
-	Oswald-normal-700.woff
-	Roboto-italic-500.woff
-	Roboto-normal-500.woff
-
-### out/fonts/fonts.css
-
-	@font-face {
-		font-family: 'Oswald';
-		font-style: normal;
-		font-weight: 400;
-		src: url(../fonts/Oswald-normal-400.woff) format('woff');
-		unicode-range: U+0-10FFFF;
-	}
-
-	@font-face {
-		font-family: 'Oswald';
-		font-style: normal;
-		font-weight: 700;
-		src: url(../fonts/Oswald-normal-700.woff) format('woff');
-		unicode-range: U+0-10FFFF;
-	}
-
-	@font-face {
-		font-family: 'Roboto';
-		font-style: normal;
-		font-weight: 500;
-		src: url(../fonts/Roboto-normal-500.woff) format('woff');
-		unicode-range: U+0-10FFFF;
-	}
-
-	@font-face {
-		font-family: 'Roboto';
-		font-style: italic;
-		font-weight: 500;
-		src: url(../fonts/Roboto-italic-500.woff) format('woff');
-		unicode-range: U+0-10FFFF;
-	}
+	./css/fonts.css
+	./fonts/Lato-normal-300.woff
+	./fonts/googlefonts/Oswald-normal-400.woff
+	./fonts/googlefonts/Oswald-normal-700.woff
+	./fonts/googlefonts/Roboto-normal-500.woff
+	./fonts/googlefonts/Roboto-italic-500.woff
+	./fonts/Roboto-normal-400.woff
+	./fonts/Lato-normal-400.woff
+	./fonts/googlecss/myGoogleFonts.css
+	./fonts/Lato-italic-400.woff
 
 # Example #4
 
@@ -241,33 +206,33 @@ Command-line usage
 
 	./css/fonts.css
 	./fonts/Lato-normal-300.woff
+	./fonts/Roboto-normal-400.woff
 	./fonts/Lato-normal-400.woff
 	./fonts/Lato-italic-400.woff
-	./fonts/Roboto-normal-400.woff
 
 ### out/css/fonts.css
 
 	@font-face {
 		font-family: 'Lato';
-		font-style: normal;
-		font-weight: 300;
-		src: url(fonts/Lato-normal-300.woff) format('woff');
-		unicode-range: U+0-10FFFF;
-	}
-
-	@font-face {
-		font-family: 'Lato';
-		font-style: normal;
-		font-weight: 400;
-		src: url(fonts/Lato-normal-400.woff) format('woff');
-		unicode-range: U+0-10FFFF;
-	}
-
-	@font-face {
-		font-family: 'Lato';
 		font-style: italic;
 		font-weight: 400;
-		src: url(fonts/Lato-italic-400.woff) format('woff');
+		src: url(fonts/fonts/Lato-italic-400.woff) format('woff');
+		unicode-range: U+0-10FFFF;
+	}
+
+	@font-face {
+		font-family: 'Lato';
+		font-style: normal;
+		font-weight: 300;
+		src: url(fonts/fonts/Lato-normal-300.woff) format('woff');
+		unicode-range: U+0-10FFFF;
+	}
+
+	@font-face {
+		font-family: 'Lato';
+		font-style: normal;
+		font-weight: 400;
+		src: url(fonts/fonts/Lato-normal-400.woff) format('woff');
 		unicode-range: U+0-10FFFF;
 	}
 
@@ -275,7 +240,7 @@ Command-line usage
 		font-family: 'Roboto';
 		font-style: normal;
 		font-weight: 400;
-		src: url(fonts/Roboto-normal-400.woff) format('woff');
+		src: url(fonts/fonts/Roboto-normal-400.woff) format('woff');
 		unicode-range: U+0-10FFFF;
 	}
 

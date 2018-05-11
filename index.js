@@ -1,4 +1,4 @@
-#!/usr/bin/node --use_strict
+#!/usr/bin/env node
 
 var http = require('http');
 var path = require('path');

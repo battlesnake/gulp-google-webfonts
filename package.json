@@ -28,6 +28,6 @@
     "vinyl": "^2.0.0"
   },
   "devDependencies": {
-    "gulp": "^4.0.0"
+    "gulp": "^3.0.0"
   }
 }
