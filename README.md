@@ -84,6 +84,7 @@ The googleWebFonts object can take the following options:
  * fontsDir - The path the output fonts should be under. (Note: the path is relative to `gulp.dest`)
  * cssDir - The path the output css should be under. (Note: the path is relative to `gulp.dest`)
  * cssFilename - The filename of the output css file.
+ * relativePaths - Whether the fonts path should be relative to the css path.
 
 # Example #2
 
@@ -122,6 +123,85 @@ The googleWebFonts object can take the following options:
 	./fonts/googlefonts/Roboto-normal-500.woff
 
 # Example #3
+
+## Input
+
+### fonts.list
+
+	# Tab-delimeted format
+	Oswald	400,700	latin,latin-ext
+
+	# Google format
+	Roboto:500,500italic&subset=greek
+
+### gulpfile.js
+
+	var gulp = require('gulp');
+	var googleWebFonts = require('gulp-google-webfonts');
+
+	var options = {
+		fontsDir: 'googlefonts/',
+		cssDir: 'googlecss/',
+		cssFilename: 'myGoogleFonts.css',
+		relativePaths: true
+	};
+
+	gulp.task('fonts', function () {
+		return gulp.src('./fonts.list')
+			.pipe(googleWebFonts(options))
+			.pipe(gulp.dest('out/fonts'))
+			;
+		});
+
+	gulp.task('default', ['fonts']);
+
+## Output
+
+	gulp fonts
+
+### out/fonts/
+
+	fonts.css
+	Oswald-normal-400.woff
+	Oswald-normal-700.woff
+	Roboto-italic-500.woff
+	Roboto-normal-500.woff
+
+### out/fonts/fonts.css
+
+	@font-face {
+		font-family: 'Oswald';
+		font-style: normal;
+		font-weight: 400;
+		src: url(../fonts/Oswald-normal-400.woff) format('woff');
+		unicode-range: U+0-10FFFF;
+	}
+
+	@font-face {
+		font-family: 'Oswald';
+		font-style: normal;
+		font-weight: 700;
+		src: url(../fonts/Oswald-normal-700.woff) format('woff');
+		unicode-range: U+0-10FFFF;
+	}
+
+	@font-face {
+		font-family: 'Roboto';
+		font-style: normal;
+		font-weight: 500;
+		src: url(../fonts/Roboto-normal-500.woff) format('woff');
+		unicode-range: U+0-10FFFF;
+	}
+
+	@font-face {
+		font-family: 'Roboto';
+		font-style: italic;
+		font-weight: 500;
+		src: url(../fonts/Roboto-italic-500.woff) format('woff');
+		unicode-range: U+0-10FFFF;
+	}
+
+# Example #4
 
 Command-line usage
 

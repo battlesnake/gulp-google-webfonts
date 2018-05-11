@@ -4,7 +4,8 @@ var googleWebFonts = require('../');
 var options = {
 	fontsDir: 'googlefonts/',
 	cssDir: 'googlecss/',
-	cssFilename: 'myGoogleFonts.css'
+	cssFilename: 'myGoogleFonts.css',
+  relativePaths: true
 };
 
 gulp.task('fonts', function () {

@@ -1,2 +1,5 @@
-Lato	300,400,400italic	latin,greek
-Roboto	400					latin,latin-ext
+# Tab-delimeted format
+Oswald	400,700	latin,latin-ext
+
+# Google format
+Roboto:500,500italic&subset=greek

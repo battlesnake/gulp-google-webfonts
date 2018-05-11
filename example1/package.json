@@ -7,8 +7,5 @@
     "test": "gulp"
   },
   "author": "Mark K Cowan",
-  "license": "ISC",
-  "dependencies": {
-    "gulp-google-webfonts": "*"
-  }
+  "license": "ISC"
 }

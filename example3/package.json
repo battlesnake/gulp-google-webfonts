@@ -1,14 +1,11 @@
 {
-  "name": "example3",
+  "name": "example2",
   "version": "0.0.1",
   "description": "",
-  "main": "makefile",
+  "main": "gulpfile.js",
   "scripts": {
-    "test": "make"
+    "test": "gulp"
   },
   "author": "Mark K Cowan",
-  "license": "ISC",
-  "dependencies": {
-    "gulp-google-webfonts": "*"
-  }
+  "license": "ISC"
 }

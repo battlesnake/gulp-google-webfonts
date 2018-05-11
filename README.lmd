@@ -56,8 +56,28 @@ $ gulp fonts
 
 | find -type f
 
+
 # Example #3
 : example3/
+
+## Input (other inputs same as example #1)
+
+### gulpfile.js
+
+< gulpfile.js
+
+## Output
+
+$ gulp fonts
+	gulp fonts
+
+### out/
+: example3/out/
+
+| find -type f
+
+# Example #4
+: example4/
 
 Command-line usage
 
@@ -77,7 +97,7 @@ $ make clean && make
 	make
 
 ### out/
-: example3/out/
+: example4/out/
 
 | find -type f
 

@@ -1,5 +1,5 @@
 var gulp = require('gulp');
-var googleWebFonts = require('gulp-google-webfonts');
+var googleWebFonts = require('../');
 
 var options = { };
 
