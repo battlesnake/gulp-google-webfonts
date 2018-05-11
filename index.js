@@ -22,6 +22,7 @@ var defaultOptions = {
 	fontsDir: './',
 	cssDir: './',
 	outBaseDir: '',
+	relativePaths: false,
 	host: 'fonts.googleapis.com',
 	hostPath: 'css',
 	format: 'woff'
@@ -286,7 +287,10 @@ function getter(options) {
 			);
 
 			function makeFontFace(request) {
-				request.name = path.posix.join(options.fontsDir, request.name);
+				request.name = path.posix.join(
+					options.relativePaths ? path.posix.relative(options.cssDir, options.fontsDir) : options.fontsDir, 
+					request.name
+				);
 				return template
 					.replace(/\$(\w+)/g, function (m, name) {
 						return request[name];
