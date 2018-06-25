@@ -24,7 +24,7 @@ var defaultOptions = {
 	relativePaths: false,
 	host: 'fonts.googleapis.com',
 	hostPath: 'css',
-        protocol: 'https',
+	protocol: 'https',
 	format: 'woff'
 };
 
@@ -95,7 +95,7 @@ function getter(options) {
 			throw new Error('outBaseDir only valid when run from command line, use gulp.dest instead');
 		}
 	}
-        http = require(options.protocol);
+	http = require(options.protocol);
 	return isGulp ? through.obj(processor) : processor;
 
 	function processor(file, enc, next) {
