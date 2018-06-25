@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-var http = require('http');
 var path = require('path');
 var async = require('async');
 var _ = { defaults: require('lodash.defaults') };
@@ -25,6 +24,7 @@ var defaultOptions = {
 	relativePaths: false,
 	host: 'fonts.googleapis.com',
 	hostPath: 'css',
+        protocol: 'https',
 	format: 'woff'
 };
 
@@ -73,6 +73,7 @@ if (!isGulp) {
 		.option('--out-base-dir [path]', 'Base path to output directory, prepended to cssDir/fontsDir', defaultOptions.outBaseDir)
 		.option('--host [domain]', 'Host to query ("fonts.googleapis.com")', defaultOptions.host)
 		.option('--host-path [path]', 'Host path for query ("css")', defaultOptions.hostPath)
+		.option('--protocol [protocol]', 'Protocol used for requests [https|http]', defaultOptions.protocol)
 		.option('--format [format]', 'Format to retrieve [woff|woff2|svg|eot|ttf]', defaultOptions.format)
 		.option('-v, --verbose', 'Verbose output', false)
 		.parse(process.argv)
@@ -94,6 +95,7 @@ function getter(options) {
 			throw new Error('outBaseDir only valid when run from command line, use gulp.dest instead');
 		}
 	}
+        http = require(options.protocol);
 	return isGulp ? through.obj(processor) : processor;
 
 	function processor(file, enc, next) {
