@@ -237,14 +237,14 @@ function getter(options) {
 					"\\s*font-family:\\s*'([^']+)';",
 					"\\s*font-style:\\s*(\\w+);",
 					"\\s*font-weight:\\s*(\\w+);",
-					"\\s*src:[^;]*url\\(([^)]+)\\)[^;]*;",
+					"\\s*src:\\s*local\\('([^']+)'\\),\\s*local\\('([^']+)'\\),\\s*url\\(([^)]+)\\)[^;]*;",
 					".*(?:unicode-range:([^;]+);)?",
 				].join(''), 'm');
 
 				return formatData.apply(null, block.match(re, 'm'));
 
 
-				function formatData(block, family, style, weight, url, range) {
+				function formatData(block, family, style, weight, local1, local2, url, range) {
 					var name = [family, style, weight].join('-') + '.' + ext;
 					return {
 						family: family,
@@ -252,6 +252,8 @@ function getter(options) {
 						weight: weight,
 						name: name.replace(/\s/g, '_'),
 						url: url,
+						local1: local1,
+						local2: local2,
 						range: range || 'U+0-10FFFF'
 					};
 				}
@@ -274,7 +276,7 @@ function getter(options) {
 				'	font-family: \'$family\';',
 				'	font-style: $style;',
 				'	font-weight: $weight;',
-				'	src: url($uri)' + format + ';',
+				'	src: local(\'$local1\'), local(\'$local2\'), url($uri)' + format + ';',
 				'	unicode-range: $range;',
 				'}'
 			].join('\n');
