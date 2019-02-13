@@ -2,3 +2,4 @@
 example*/out/
 .*.swp
 .*.swo
+package-lock.json
