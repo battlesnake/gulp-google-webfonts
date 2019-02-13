@@ -86,6 +86,7 @@ The googleWebFonts object can take the following options:
  * fontsDir - The path the output fonts should be under. (Note: the path is relative to `gulp.dest`)
  * cssDir - The path the output css should be under. (Note: the path is relative to `gulp.dest`)
  * cssFilename - The filename of the output css file.
+ * fontDisplayType - The css font display type (Default: auto)
 
 # Example #2
 
