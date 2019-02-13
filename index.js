@@ -22,6 +22,7 @@ var defaultOptions = {
 	cssDir: './',
 	outBaseDir: '',
 	relativePaths: false,
+	fontDisplayType: "auto",
 	host: 'fonts.googleapis.com',
 	hostPath: 'css',
 	protocol: 'https',
@@ -70,6 +71,7 @@ if (!isGulp) {
 		.option('--css-filename [filename]', 'Name for output CSS file', defaultOptions.cssFilename)
 		.option('--css-dir [path]', 'CSS output directory', defaultOptions.fontsDir)
 		.option('--fonts-dir [path]', 'Fonts output directory', defaultOptions.cssDir)
+		.option('--font-display-type [type]', 'Font display type', defaultOptions.fontDisplayType)
 		.option('--out-base-dir [path]', 'Base path to output directory, prepended to cssDir/fontsDir', defaultOptions.outBaseDir)
 		.option('--host [domain]', 'Host to query ("fonts.googleapis.com")', defaultOptions.host)
 		.option('--host-path [path]', 'Host path for query ("css")', defaultOptions.hostPath)
@@ -276,6 +278,7 @@ function getter(options) {
 				'	font-family: \'$family\';',
 				'	font-style: $style;',
 				'	font-weight: $weight;',
+				'	font-display: ' + options.fontDisplayType + ';',
 				'	src: local(\'$local1\'), local(\'$local2\'), url($uri)' + format + ';',
 				'	unicode-range: $range;',
 				'}'
