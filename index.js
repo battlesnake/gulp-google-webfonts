@@ -239,7 +239,7 @@ function getter(options) {
 					"\\s*font-family:\\s*'([^']+)';",
 					"\\s*font-style:\\s*(\\w+);",
 					"\\s*font-weight:\\s*(\\w+);",
-					"\\s*src:[^;]*url\\(([^)]+)\\)[^;]*;",
+					"\\s*src:(?:\\s*local\\('([^']+)'\\),)?(?:\\s*local\\('([^']+)'\\),)?\\s*url\\(([^)]+)\\)[^;]*;",
 					".*(?:unicode-range:([^;]+);)?",
 				].join(''), 'm');
 
