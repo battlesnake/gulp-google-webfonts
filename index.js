@@ -239,21 +239,24 @@ function getter(options) {
 					"\\s*font-family:\\s*'([^']+)';",
 					"\\s*font-style:\\s*(\\w+);",
 					"\\s*font-weight:\\s*(\\w+);",
-					"\\s*src:[^;]*url\\(([^)]+)\\)[^;]*;",
+					"\\s*src:([^;]*);",
 					".*(?:unicode-range:([^;]+);)?",
 				].join(''), 'm');
 
 				return formatData.apply(null, block.match(re, 'm'));
 
 
-				function formatData(block, family, style, weight, url, range) {
+				function formatData(block, family, style, weight, src, range) {
 					var name = [family, style, weight].join('-') + '.' + ext;
+					var url = src.match(/url\(([^)]+)\)/)[1];
+					var locals = src.match(/local\([^)]+\)/g) || [];
 					return {
 						family: family,
 						style: style,
 						weight: weight,
 						name: name.replace(/\s/g, '_'),
 						url: url,
+						locals: locals,
 						range: range || 'U+0-10FFFF'
 					};
 				}
@@ -277,7 +280,7 @@ function getter(options) {
 				'	font-style: $style;',
 				'	font-weight: $weight;',
 				'	font-display: ' + options.fontDisplayType + ';',
-				'	src: url($uri)' + format + ';',
+				'	src: $src' + format + ';',
 				'	unicode-range: $range;',
 				'}'
 			].join('\n');
@@ -287,15 +290,16 @@ function getter(options) {
 				.join('\n\n');
 			writeFile(
 				path.join(options.cssDir, options.cssFilename),
-				new Buffer(css),
+				Buffer.from(css),
 				function (err) { next(err, requests); }
 			);
 
 			function makeFontFace(request) {
-				request.uri = path.posix.join(
+				var uri = path.posix.join(
 					options.relativePaths ? path.posix.relative(options.cssDir, options.fontsDir) : options.fontsDir, 
 					request.name
 				);
+				request.src = request.locals.map(local => local + ', ').join('') + 'url(' + uri + ')';
 				request.name = path.posix.join(options.fontsDir, request.name);
 				return template
 					.replace(/\$(\w+)/g, function (m, name) {
