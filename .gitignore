@@ -1,5 +1,6 @@
 /node_modules/
 example*/out/
+example*/node_modules
 .*.swp
 .*.swo
 package-lock.json
