@@ -239,14 +239,15 @@ function getter(options) {
 					"\\s*font-family:\\s*'([^']+)';",
 					"\\s*font-style:\\s*(\\w+);",
 					"\\s*font-weight:\\s*(\\w+);",
-					"\\s*src:([^;]*);",
-					".*(?:unicode-range:([^;]+);)?",
+					"\\s*font-stretch:\\s*(\\w+);",
+					"\\s*src:\\s*([^;]*)(.*format[^;]+|);",
+					"(\\s*unicode-range:\\s*([^;]+);|)?",
 				].join(''), 'm');
 
 				return formatData.apply(null, block.match(re, 'm'));
 
 
-				function formatData(block, family, style, weight, src, range) {
+				function formatData(block, family, style, weight, stretch, src, range) {
 					var name = [family, style, weight].join('-') + '.' + ext;
 					var url = src.match(/url\(([^)]+)\)/)[1];
 					var locals = src.match(/local\([^)]+\)/g) || [];
