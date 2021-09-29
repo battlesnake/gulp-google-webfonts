@@ -236,17 +236,22 @@ function getter(options) {
 				// since Google doesn't put there '.svg' suffix for some reason
 				// (but does that for other extensions).
 				var re = new RegExp([
-					"\\s*font-family:\\s*'([^']+)';",
-					"\\s*font-style:\\s*(\\w+);",
-					"\\s*font-weight:\\s*(\\w+);",
-					"\\s*src:([^;]*);",
-					".*(?:unicode-range:([^;]+);)?",
+					"\\s*font-family:\\s*'(?<family>[^']+)';",
+					"\\s*font-style:\\s*(?<style>\\w+);",
+					"\\s*font-weight:\\s*(?<weight>\\w+);",
+					".*(?:\\s*font-stretch:\\s(?<stretch>[^;]+);)?",
+					"\\s*src:(?<src>[^;]*);",
+					".*(?:unicode-range:(?<range>[^;]+);)?",
 				].join(''), 'm');
 
-				return formatData.apply(null, block.match(re, 'm'));
+				let found = block.match(re, 'm');
+				if (found === null) {
+					throw new Error("faild to match block");
+				}
+				return formatData(found.groups);
 
-
-				function formatData(block, family, style, weight, src, range) {
+				function formatData(data) {
+					const { family, style, weight, stretch, src, range } = data;
 					var name = [family, style, weight].join('-') + '.' + ext;
 					var url = src.match(/url\(([^)]+)\)/)[1];
 					var locals = src.match(/local\([^)]+\)/g) || [];
@@ -257,6 +262,7 @@ function getter(options) {
 						name: name.replace(/\s/g, '_'),
 						url: url,
 						locals: locals,
+						stretch: stretch || 'normal',
 						range: range || 'U+0-10FFFF'
 					};
 				}
@@ -280,6 +286,7 @@ function getter(options) {
 				'	font-style: $style;',
 				'	font-weight: $weight;',
 				'	font-display: ' + options.fontDisplayType + ';',
+				'	font-stretch: $stretch;',
 				'	src: $src' + format + ';',
 				'	unicode-range: $range;',
 				'}'

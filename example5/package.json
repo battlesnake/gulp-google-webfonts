@@ -1,0 +1,11 @@
+{
+  "name": "example5",
+  "version": "0.0.1",
+  "description": "",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "gulp"
+  },
+  "author": "Tingyu Huang",
+  "license": "ISC"
+}
