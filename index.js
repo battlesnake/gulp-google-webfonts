@@ -246,7 +246,7 @@ function getter(options) {
 
 				let found = block.match(re, 'm');
 				if (found === null) {
-					throw new Error("faild to match block");
+					throw new Error("failed to match block");
 				}
 				return formatData(found.groups);
 
